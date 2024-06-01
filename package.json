@@ -19,6 +19,7 @@
   "homepage": "https://github.com/alasteralfio/mini-project-snippets#readme",
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security"
   }
 }

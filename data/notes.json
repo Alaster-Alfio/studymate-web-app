@@ -1,0 +1,26 @@
+[
+    {
+        "noteID": 1,
+        "userID": 1,
+        "title": "Meeting Notes",
+        "content": "Discussion points:\n- Project updates\n- Action items\n- Next meeting date",
+        "category": "Meetings",
+        "createdAt": "2024-06-15T13:00:00"
+    },
+    {
+        "noteID": 2,
+        "userID": 1,
+        "title": "Study Notes",
+        "content": "Topics covered:\n- Math: Algebra\n- Science: Biology\n- History: World War II",
+        "category": "Study",
+        "createdAt": "2024-06-15T14:30:00"
+    },
+    {
+        "noteID": 3,
+        "userID": 2,
+        "title": "Shopping List",
+        "content": "Items to buy:\n- Milk\n- Eggs\n- Bread\n- Vegetables",
+        "category": "Shopping",
+        "createdAt": "2024-06-15T15:45:00"
+    }
+]
