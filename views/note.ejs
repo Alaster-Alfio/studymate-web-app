@@ -22,7 +22,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <input type="text" placeholder="Title" id="titleNew" class="input" name="title" value="<%= note.title %>">
+                            <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= note.title %>">
                         </div>
                         <div class="col d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
@@ -41,6 +41,11 @@
     
     <!-- CSS Styles -->
     <style>
+        .input-title {
+            border: 0px;
+            border-bottom: 2px solid black;
+        }
+        
         .notes-btn {
             display: flex;
             width: 100px;
