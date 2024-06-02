@@ -16,14 +16,29 @@
             <!-- Content area -->
             <div class="col mt-3">
                 <div class="row">
-                    <h2>Notes</h2>
+                    <div class="col">
+                        <h2>Notes</h2>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <a href="/">
+                        <div tabindex="0" class="plusButton me-2">
+                            <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                                <g mask="url(#mask0_21_345)">
+                                    <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        </a>
+                    </div>
+                    
                 </div>
-                <div class="card-div col mt-3 d-flex ">
+                <div class="card-div mt-3 ">
                     <% notesTitles.forEach(title => { %>
                         <div class="card m-1 col">
                             <div class="card-body d-flex justify-content-between">
                                 <div>
                                     <h3 class="card-title"><%= title %></h3>
+                                    <h6 class="card-category text-muted"><%= notesCategory[notesTitles.indexOf(title)] %></h6>
                                 </div>
                                 <div class="btn-div">
                                 <a href="/" class="btn btn-primary notes-btn">Open</a>
@@ -43,6 +58,78 @@
         }
         .btn-div {
             align-self: flex-end;
+        }
+        .notes-btn {
+            display: flex;
+            width: 100px;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(to bottom, #a352aa, #8a00ff);
+            transition: all 0.5s ease;
+        }
+
+        .plusButton {
+            /* Config start */
+            --plus_sideLength: 2.5rem;
+            --plus_topRightTriangleSideLength: 0.9rem;
+            /* Config end */
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid white;
+            width: var(--plus_sideLength);
+            height: var(--plus_sideLength);
+            background-color: #8a00ff;
+            overflow: hidden;
+        }
+
+        .plusButton::before {
+            position: absolute;
+            content: "";
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+            transition-timing-function: ease-in-out;
+            transition-duration: 0.2s;
+        }
+
+        .plusButton:hover {
+            cursor: pointer;
+        }
+
+        .plusButton:hover::before {
+            --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+        }
+
+        .plusButton:focus-visible::before {
+            --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+        }
+
+        .plusButton>.plusIcon {
+            fill: white;
+            width: calc(var(--plus_sideLength) * 0.7);
+            height: calc(var(--plus_sideLength) * 0.7);
+            z-index: 1;
+            transition-timing-function: ease-in-out;
+            transition-duration: 0.2s;
+        }
+
+        .plusButton:hover>.plusIcon {
+            fill: purple;
+            transform: rotate(180deg);
+        }
+
+        .plusButton:focus-visible>.plusIcon {
+            fill: black;
+            transform: rotate(180deg);
         }
     </style>
 </body>

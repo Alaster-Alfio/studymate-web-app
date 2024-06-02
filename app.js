@@ -7,12 +7,18 @@ const fs = require("fs");
 // Set up middleware for parsing JSON bodies
 app.use(express.json());
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Set up views directory for EJS templates
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// User ID (Example)
+let userId = 1;
 
 // Define routes
 app.get("/", (req, res) => {
@@ -47,15 +53,41 @@ app.post("/usersdb", (req, res) => {
 });
 
 // ========================================
+//                  Login
+// ========================================
+app.post("/login", (req, res) => {
+    const username = req.body.username;
+    const users = readOrWriteFile('read', null, "data/users.json");
+    const parsedUsers = JSON.parse(users);
+    const user = parsedUsers.find(user => user.username === username);
+    console.log(req.body.username)
+    
+    if (user) {
+        userId = user.userID;
+        res.redirect("/notes");
+    } else {
+        // User not found, send back an error message
+        res.status(404).send("User not found");
+    }
+});
+
+
+// ========================================
 //                  Notes
 // ========================================
+
+// Route for displaying notes
 app.get("/notes", (req, res) => {
     const notes = readOrWriteFile('read', null, "data/notes.json");
     const parsedNotes = JSON.parse(notes);
 
-    const notesTitles = parsedNotes.map(note => note.title);
+    const userNotes = parsedNotes.filter(note => note.userID === userId);
 
-    res.render("notes", { notesTitles });
+    const notesTitles = userNotes.map(note => note.title);
+    const notesCategory = userNotes.map(note => note.category);
+    const notesId = userNotes.map(note => note.noteID);
+
+    res.render("notes", { notesTitles, notesCategory, notesId });
 })
 
 

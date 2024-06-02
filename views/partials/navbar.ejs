@@ -1,25 +1,24 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white" id="sidebar">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <img src="/icons/testIcon.png" alt="Home Icon" class="title-icon">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white disable-hover" id="sidebar">
+    <a href="/" class="d-flex align-items-center text-white text-decoration-none">
         <span class="fs-4 title-text">Studymate</span>
     </a>
     <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
+    <ul class="nav nav-pills flex-column">
         <li class="nav-item">
             <a href="/" class="nav-link text-white">
-                <img src="/icons/testIcon.png" alt="Home Icon" class="icon">
-                <span class="nav-text">Home</span>
+                <img src="/icons/user.png" alt="User Icon" class="icon">
+                <span class="nav-text">User</span>
             </a>
         </li>
         <li>
             <a href="/notes" class="nav-link text-white">
-                <img src="/icons/testIcon.png" alt="Notes Icon" class="icon">
+                <img src="/icons/notes.png" alt="Notes Icon" class="icon">
                 <span class="nav-text">Notes</span>
             </a>
         </li>
         <li>
             <a href="/calendar" class="nav-link text-white">
-                <img src="/icons/testIcon.png" alt="Calendar Icon" class="icon">
+                <img src="/icons/calendar.png" alt="Calendar Icon" class="icon">
                 <span class="nav-text">Calendar</span>
             </a>
         </li>
@@ -28,14 +27,14 @@
 
 <style>
     #sidebar {
-        width: 100px;
+        width: 85px;
         height: 100vh;
-        background: linear-gradient(to bottom, purple, pink);
+        background: linear-gradient(to bottom, #a352aa, #8a00ff);
         transition: width 0.3s;
         z-index: 1000; 
     }
     #sidebar:hover {
-        width: 220px;
+        width: 170px;
     }
     .title-text {
         opacity: 0;
@@ -57,16 +56,20 @@
         display: inline;
         opacity: 1;
     }
-    .title-icon {
-        margin-left: 20px;
-        margin-right: 10px;
-        width: 24px;
-        height: 24px;
-    }
     .icon {
-        margin-left: 5px;
         margin-right: 5px;
         width: 24px;
         height: 24px;
     }
+    .disable-hover {
+            pointer-events: none;
+        }
 </style>
+<script>
+    // Remove the disable-hover class after 1 seconds
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('sidebar').classList.remove('disable-hover');
+        }, 1000);
+    });
+</script>

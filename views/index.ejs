@@ -16,33 +16,14 @@
             
             <!-- Content area -->
             <div class="col mt-3">
-                <div class="container">
-                    <h2>Categories</h2>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Category 1</h5>
-                                    <p class="card-text">Some example content for category 1.</p>
-                                </div>
-                            </div>
+                <div class="text-center my-4">
+                    <h1>Sign in</h1>
+                    <div class="d-flex justify-content-center mt-3">
+                    <form action="/login" method="POST">
+                        <div class="InputContainer">
+                            <input type="text" placeholder="Username" id="username" class="input" name="username">
                         </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Category 2</h5>
-                                    <p class="card-text">Some example content for category 2.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Category 3</h5>
-                                    <p class="card-text">Some example content for category 3.</p>
-                                </div>
-                            </div>
-                        </div>
+                    </form>
                     </div>
                 </div>
             </div>
@@ -51,7 +32,27 @@
     
     <!-- CSS Styles -->
     <style>
+        .InputContainer {
+            width: 210px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #a352aa, #8a00ff);
+            border-radius: 30px;
+            overflow: hidden;
+            cursor: pointer;
+        }
 
+        .input {
+            width: 200px;
+            height: 40px;
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            padding-left: 15px;
+            letter-spacing: 0.8px;
+        }
     </style>
 </body>
 </html>
