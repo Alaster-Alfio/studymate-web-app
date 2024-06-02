@@ -17,8 +17,9 @@ app.set("views", path.join(__dirname, "views"));
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// User ID (Example)
+// Variables
 let userId = 1;
+let note = null;
 
 // Define routes
 app.get("/", (req, res) => {
@@ -60,14 +61,24 @@ app.post("/login", (req, res) => {
     const users = readOrWriteFile('read', null, "data/users.json");
     const parsedUsers = JSON.parse(users);
     const user = parsedUsers.find(user => user.username === username);
-    console.log(req.body.username)
     
     if (user) {
         userId = user.userID;
         res.redirect("/notes");
     } else {
-        // User not found, send back an error message
-        res.status(404).send("User not found");
+        // User not found
+        const newUser = {
+            userID: parsedUsers.length + 1,
+            username: username,
+            createdAt: new Date().toISOString()
+        };
+
+        // Save the new user to the database
+        parsedUsers.push(newUser);
+        readOrWriteFile('write', JSON.stringify(parsedUsers), "data/users.json");
+
+        userId = newUser.userID;
+        res.redirect("/notes");
     }
 });
 
@@ -90,6 +101,62 @@ app.get("/notes", (req, res) => {
     res.render("notes", { notesTitles, notesCategory, notesId });
 })
 
+// displaying notes by id
+app.get("/notes/:id", (req, res) => {
+    const noteId = parseInt(req.params.id);
+
+    // Check if noteId is 0 (new note)
+    if (noteId === 0) {
+
+        const notes = readOrWriteFile('read', null, "data/notes.json");
+        const parsedNotes = JSON.parse(notes);
+
+        // Create a new blank note
+        const newNote = {
+            noteID: generateUniqueId(parsedNotes),
+            userID: userId,
+            title: "",
+            content: "",
+            category: ""
+        };
+
+        // Save the new note to the database
+        parsedNotes.push(newNote);
+        readOrWriteFile('write', JSON.stringify(parsedNotes), "data/notes.json");
+
+        // Render the new note
+        res.render("note", { note: newNote });
+    } else {
+        const notes = readOrWriteFile('read', null, "data/notes.json");
+        const parsedNotes = JSON.parse(notes);
+        const note = parsedNotes.find(note => note.noteID === noteId);
+
+        // Render the existing note
+        res.render("note", { note });
+    }
+});
+
+
+// update notes
+app.post("/notes/:id", (req, res) => {
+    const noteId = parseInt(req.params.id);
+    const updatedNote = req.body;
+    const notes = readOrWriteFile('read', null, "data/notes.json");
+    let parsedNotes = JSON.parse(notes);
+    
+    // Find the index of the note to be updated
+    const noteIndex = parsedNotes.findIndex(note => note.noteID === noteId);
+    if (noteIndex !== -1) {
+        // Update the note with the new data
+        parsedNotes[noteIndex] = { ...parsedNotes[noteIndex], ...updatedNote };
+        readOrWriteFile('write', JSON.stringify(parsedNotes), "data/notes.json");
+        
+        // if it worked
+        res.redirect("/notes");
+    } else {
+        res.status(404).send("Note not found");
+    }
+});
 
 // Start the server
 app.listen(port, () => {
@@ -121,6 +188,15 @@ function readOrWriteFile(syntax, content, filePath) {
     }
 }
 
+function generateUniqueId(parsedNotes) {
+    // Find the highest existing ID
+    const highestId = parsedNotes.reduce((maxId, note) => {
+        return note.noteID > maxId ? note.noteID : maxId;
+    }, 0);
+
+    // Increment the highest ID by 1 to generate a new unique ID
+    return highestId + 1;
+}
 /*
 https://uiverse.io/Alanav29/tough-ape-65 (Username Input)
 

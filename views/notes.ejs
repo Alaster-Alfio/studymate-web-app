@@ -20,7 +20,7 @@
                         <h2>Notes</h2>
                     </div>
                     <div class="col d-flex justify-content-end">
-                        <a href="/">
+                        <a href="/notes/0">
                         <div tabindex="0" class="plusButton me-2">
                             <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
                                 <g mask="url(#mask0_21_345)">
@@ -41,7 +41,7 @@
                                     <h6 class="card-category text-muted"><%= notesCategory[notesTitles.indexOf(title)] %></h6>
                                 </div>
                                 <div class="btn-div">
-                                <a href="/" class="btn btn-primary notes-btn">Open</a>
+                                <a href="/notes/<%= notesId[notesTitles.indexOf(title)] %>" class="btn btn-primary notes-btn">Open</a>
                                 </div>
                             </div>
                         </div>

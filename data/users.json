@@ -1,12 +1,1 @@
-[
-    {
-        "userID": 1,
-        "username": "john_doe",
-        "createdAt": "2024-06-15T10:30:00"
-    },
-    {
-        "userID": 2,
-        "username": "jane_smith",
-        "createdAt": "2024-06-15T11:45:00"
-    }
-]
+[{"userID":1,"username":"john_doe","createdAt":"2024-06-15T10:30:00"},{"userID":2,"username":"jane_smith","createdAt":"2024-06-15T11:45:00"},{"userID":3,"username":"walter_white"}]
