@@ -28,8 +28,11 @@
                             <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
                         </div>
                     </div>
-                    <div class="row">
-                        <input type="text" placeholder="Category" id="categoryNew" class="input" name="category" value="<%= note.category %>">
+                    <div class="row d-flex">
+                        <div class="col">
+                            <input type="text" placeholder="Category" id="categoryNew" class="input input-category" name="category" value="<%= note.category %>">
+                        </div>
+                        <div class="col"></div>
                     </div>
                     <div class="row">
                         <textarea placeholder="Content" id="contentNew" class="input" name="content"><%= note.content %></textarea>
@@ -42,10 +45,26 @@
     <!-- CSS Styles -->
     <style>
         .input-title {
+            font-size: xx-large;
+            width: 100%;
             border: 0px;
             border-bottom: 2px solid black;
+            transition: all 0.2 ease;
         }
-        
+        .input-title:focus {
+            outline: none !important;
+            border-bottom: 2px solid #8a00ff;
+        }
+        .input-category {
+            width: 100%;
+            border: 0px;
+            border-bottom: 2px solid black;
+            transition: all 0.2 ease;
+        }
+        .input-category:focus {
+            outline: none !important;
+            border-bottom: 2px solid #8a00ff;
+        }
         .notes-btn {
             display: flex;
             width: 100px;
