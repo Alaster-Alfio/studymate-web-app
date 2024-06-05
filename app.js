@@ -158,6 +158,24 @@ app.post("/notes/:id", (req, res) => {
     }
 });
 
+// ========================================
+//                Calendar
+// ========================================
+
+// Route for displaying calendar
+app.get("/calendar", (req, res) => {
+    const events = readOrWriteFile('read', null, "data/calendarEvents.json");
+    const parsedEvents = JSON.parse(events);
+    console.log(events)
+
+    const userEvents = parsedEvents.filter(event => event.userID === userId);
+
+    const eventsTitle = userEvents.map(event => event.title);
+    const startTime = userEvents.map(event => event.startTime);
+    const endTime = userEvents.map(event => event.endTime);
+    res.render("calendar", { eventsTitle, startTime, endTime });
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
@@ -199,5 +217,5 @@ function generateUniqueId(parsedNotes) {
 }
 /*
 https://uiverse.io/Alanav29/tough-ape-65 (Username Input)
-
+https://github.com/iamshaunjp/bootstrap-4-playlist/blob/lesson-9/index.html 
 */

@@ -18,7 +18,7 @@
             <div class="col mt-3">
                 <form action="/notes/<%= note.noteID %>/" method="POST">
                     <div class="d-none">
-                        <input type="text" placeholder="Id" id="id" class="input" name="id" value="<%= note.id %>">
+                        <input type="text" placeholder="Id" id="id" class="input" name="id" value="<%= note.id %>"> <!-- Not sure how, but this makes my page work -->
                     </div>
                     <div class="row">
                         <div class="col">
@@ -30,12 +30,12 @@
                     </div>
                     <div class="row d-flex">
                         <div class="col">
-                            <input type="text" placeholder="Category" id="categoryNew" class="input input-category" name="category" value="<%= note.category %>">
+                            <input type="text" placeholder="Category" id="categoryNew" class="input mt-3 input-category" name="category" value="<%= note.category %>">
                         </div>
                         <div class="col"></div>
                     </div>
                     <div class="row">
-                        <textarea placeholder="Content" id="contentNew" class="input" name="content"><%= note.content %></textarea>
+                        <textarea placeholder="Content" id="contentNew" class="input mt-3 input-textarea" rows="20" name="content"><%= note.content %></textarea>
                     </div>
                 </form>
             </div>
@@ -65,6 +65,17 @@
             outline: none !important;
             border-bottom: 2px solid #8a00ff;
         }
+        .input-textarea {
+            width: 100%;
+            border: 0px;
+            transition: all 0.2 ease;
+            background-image: radial-gradient(rgb(214, 214, 214) 2px, transparent 0);
+            background-size: 24px 24px;
+            background-position: 0px 15px;
+        }
+        .input-textarea:focus {
+            outline: none !important;
+        }
         .notes-btn {
             display: flex;
             width: 100px;
@@ -73,6 +84,7 @@
             letter-spacing: 1px;
             cursor: pointer;
             border: none;
+            font-size: large;
             background: linear-gradient(to bottom, #a352aa, #8a00ff);
             transition: all 0.5s ease;
         }
