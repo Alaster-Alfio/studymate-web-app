@@ -171,9 +171,48 @@ app.get("/calendar", (req, res) => {
     const userEvents = parsedEvents.filter(event => event.userID === userId);
 
     const eventsTitle = userEvents.map(event => event.title);
-    const startTime = userEvents.map(event => event.startTime);
-    const endTime = userEvents.map(event => event.endTime);
+    const startTime = userEvents.map(event => new Date(event.startDateTime).toLocaleString());
+    const endTime = userEvents.map(event => new Date(event.endDateTime).toLocaleString());
+
+
     res.render("calendar", { eventsTitle, startTime, endTime });
+});
+
+// displaying calendar by id
+app.get("/events/:id", (req, res) => {
+    const eventId = parseInt(req.params.id);
+
+    // Check if eventId is 0 (new event)
+    if (eventId === 0) {
+        const events = readOrWriteFile('read', null, "data/calendarEvents.json");
+        const parsedEvents = JSON.parse(events);
+
+        // Create a new blank event
+        const newEvent = {
+            calendarID: generateUniqueId(parsedEvents),
+            userID: userId,
+            title: "",
+            description: "",
+            startDateTime: "",
+            endDateTime: "",
+            isAllDay: false,
+            location: ""
+        };
+
+        // Save the new event to the database
+        parsedEvents.push(newEvent);
+        readOrWriteFile('write', JSON.stringify(parsedEvents), "data/calendarEvents.json");
+
+        // Render the new event
+        res.render("event", { event: newEvent });
+    } else {
+        const events = readOrWriteFile('read', null, "data/calendarEvents.json");
+        const parsedEvents = JSON.parse(events);
+        const event = parsedEvents.find(event => event.calendarID === eventId);
+
+        // Render the existing event
+        res.render("event", { event });
+    }
 });
 
 // Start the server

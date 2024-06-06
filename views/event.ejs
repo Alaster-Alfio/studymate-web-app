@@ -15,28 +15,36 @@
             <%- include ('partials/navbar.ejs') %>
             
             <!-- Content area -->
-            <div class="col mt-3">
-                <form action="/notes/<%= note.noteID %>/" method="POST">
-                    <div class="d-none">
-                        <input type="text" placeholder="Id" id="id" class="input" name="id" value="<%= note.id %>"> <!-- Not sure how, but this makes my page work -->
-                    </div>
+            <div class="col mt-3 force-col">
+                <form action="/events/<%= event.calendarID %>/" method="POST">
                     <div class="row">
-                        <div class="col">
-                            <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= note.title %>">
+                        <div class="col col-md-8">
+                            <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= event.title %>">
                         </div>
-                        <div class="col d-flex justify-content-end">
+                        <div class="col justify-content-end save-col">
                             <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
                         </div>
                     </div>
                     <div class="row d-flex">
                         <div class="col">
-                            <input type="text" placeholder="Category" id="categoryNew" class="input mt-3 input-category" name="category" value="<%= note.category %>">
+                            <input type="text" placeholder="Description" id="descriptionNew" class="input mt-3 input-description" name="description" value="<%= event.description %>">
                         </div>
                         <div class="col"></div> <!-- Empty col so the previous col takes only 50% space -->
                     </div>
                     <div class="row">
-                        <textarea placeholder="Content" id="contentNew" class="input mt-3 input-textarea" rows="20" name="content"><%= note.content %></textarea>
+                        <div class="col">
+                            <input type="datetime-local" placeholder="start" id="startNew" class="input mt-3 input-start" name="start" value="<%= event.startDateTime %>">
+                        </div>
+                        <div class="col">
+                            <input type="datetime-local" placeholder="end" id="endNew" class="input mt-3 input-end" name="end" value="<%= event.endDateTime %>">
+                        </div>
                     </div>
+                    <!-- check if isAllDay (true or false) -->
+                    <div class="row">
+                        <div class="col d-flex">
+                            <input type="checkbox" id="allDayNew" name="allDay" value="<%= event.isAllDay %>">
+                            <label for="allDay" class="m-1">All Day</label>
+                        </div>
                 </form>
             </div>
         </div>
@@ -55,30 +63,20 @@
             outline: none !important;
             border-bottom: 2px solid #8a00ff;
         }
-        .input-category {
+        .input-description {
             width: 100%;
             border: 0px;
             border-bottom: 2px solid black;
             transition: all 0.2 ease;
         }
-        .input-category:focus {
+        .input-descrition:focus {
             outline: none !important;
             border-bottom: 2px solid #8a00ff;
-        }
-        .input-textarea {
-            width: 100%;
-            border: 0px;
-            transition: all 0.2 ease;
-            background-image: radial-gradient(rgb(214, 214, 214) 2px, transparent 0);
-            background-size: 24px 24px;
-            background-position: 0px 15px;
-        }
-        .input-textarea:focus {
-            outline: none !important;
         }
         .notes-btn {
             display: flex;
             width: 100px;
+            height: 52px;
             align-items: center;
             justify-content: center;
             letter-spacing: 1px;
@@ -87,6 +85,13 @@
             font-size: large;
             background: linear-gradient(to bottom, #a352aa, #8a00ff);
             transition: all 0.5s ease;
+        }
+        .force-col {
+            position: absolute;
+            margin-left: 170px;
+        }
+        .save-col {
+            width: 100px;
         }
     </style>
 </body>
