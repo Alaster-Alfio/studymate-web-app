@@ -11,6 +11,7 @@ con.connect(function(err) {
     console.log("Connected!");
 });
 
+const moment = require('moment'); // for date
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -32,62 +33,45 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Variables
 let userId = 1;
-let note = null;
-
-// Define routes
-app.get("/", (req, res) => {
-    res.render("index");
-});
-
-// ========================================
-//           Accessing Database
-// ========================================
-
-// Route for fetching all users
-app.get("/usersdb", (req, res) => {
-    const users = readOrWriteFile('read', null, "data/users.json");
-    res.json(JSON.parse(users));
-});
-
-// Route for fetching all notes
-app.get("/notesdb", (req, res) => {
-    const notes = readOrWriteFile('read', null, "data/notes.json");
-    res.json(JSON.parse(notes));
-});
-
-// Route for creating a new user
-app.post("/usersdb", (req, res) => {
-    const newUser = req.body;
-    const users = readOrWriteFile('read', null, "data/users.json");
-    const parsedUsers = JSON.parse(users);
-
-    parsedUsers.push(newUser);
-    readOrWriteFile('write', JSON.stringify(parsedUsers), "data/users.json");
-    res.status(201).send("User created successfully");
-});
 
 // ========================================
 //                  Login
 // ========================================
-app.post("/login", (req, res) => {
+app.get("/", function (req, res) {
+    // Query the database for the username
+    const sql = 'SELECT username FROM users WHERE userID = ?';
+    con.query(sql, [userId], (err, result) => {
+        if (err) {
+            res.status(500).send("Error fetching username");
+        } else if (result.length === 0) {
+            res.status(404).send("User not found");
+        } else {
+            const username = result[0].username;
+            res.render("index", { username });
+        }
+    });
+});
+
+
+app.post("/", (req, res) => {
     const username = req.body.username;
 
-    // Query the database for the username
+    // Query the database for the username (READ)
     var sql = `SELECT * FROM users WHERE username = '${username}'`;
     con.query(sql, function (err, result) {
         if (err) throw err;
 
         if (result.length > 0) {
-            // User found, set userId and redirect to notes page
+            // User found, set userId and redirect to notes page 
             userId = result[0].userID;
             res.redirect("/notes");
         } else {
-            // User not found, insert new user into the database
+            // User not found, insert new user into the database (CREATE)
             var sqlInsert = `INSERT INTO users (username) VALUES ('${username}')`; // createdAt not used, it's defaulted to current timestamp in MySQL
             con.query(sqlInsert, function (err, result) {
                 if (err) throw err;
 
-                // Get the ID of the newly inserted user
+                // Get the ID of the new user
                 var sqlSelect = `SELECT LAST_INSERT_ID() AS userID`;
                 con.query(sqlSelect, function (err, result) {
                     if (err) throw err;
@@ -107,17 +91,20 @@ app.post("/login", (req, res) => {
 
 // Route for displaying notes
 app.get("/notes", (req, res) => {
-    const notes = readOrWriteFile('read', null, "data/notes.json");
-    const parsedNotes = JSON.parse(notes);
+    // Query for notes from current user (READ)
+    var sql = `SELECT * FROM notes WHERE userID = ${userId}`;
+    con.query(sql, function (err, result) {
+        if (err) throw err;
 
-    const userNotes = parsedNotes.filter(note => note.userID === userId);
+        // Extract data from the query (READ)
+        const notesTitles = result.map((note) => note.title);
+        const notesCategory = result.map((note) => note.category);
+        const notesId = result.map((note) => note.noteID);
 
-    const notesTitles = userNotes.map(note => note.title);
-    const notesCategory = userNotes.map(note => note.category);
-    const notesId = userNotes.map(note => note.noteID);
-
-    res.render("notes", { notesTitles, notesCategory, notesId });
-})
+        // Render the notes page with the retrieved data
+        res.render("notes", { notesTitles, notesCategory, notesId });
+    });
+});
 
 // displaying notes by id
 app.get("/notes/:id", (req, res) => {
@@ -125,56 +112,80 @@ app.get("/notes/:id", (req, res) => {
 
     // Check if noteId is 0 (new note)
     if (noteId === 0) {
-
-        const notes = readOrWriteFile('read', null, "data/notes.json");
-        const parsedNotes = JSON.parse(notes);
-
-        // Create a new blank note
+        // Create a new blank note (CREATE)
         const newNote = {
-            noteID: generateUniqueId(parsedNotes),
             userID: userId,
             title: "",
             content: "",
             category: ""
         };
 
-        // Save the new note to the database
-        parsedNotes.push(newNote);
-        readOrWriteFile('write', JSON.stringify(parsedNotes), "data/notes.json");
+        // Insert the new note into the db 
+        var sql = `INSERT INTO notes (userID, title, content, category) VALUES (${userId}, '', '', '')`;
+        con.query(sql, function (err, result) {
+            if (err) throw err;
 
-        // Render the new note
-        res.render("note", { note: newNote });
+            // Retrieve ID of the new note (READ)
+            const insertedNoteId = result.insertId;
+
+            // Render the new note
+            res.render("note", { note: { noteID: insertedNoteId, ...newNote } });
+        });
     } else {
-        const notes = readOrWriteFile('read', null, "data/notes.json");
-        const parsedNotes = JSON.parse(notes);
-        const note = parsedNotes.find(note => note.noteID === noteId);
+        // Query the db for the given noteid (READ)
+        var sql = `SELECT * FROM notes WHERE noteID = ${noteId}`;
+        con.query(sql, function (err, result) {
+            if (err) throw err;
 
-        // Render the existing note
-        res.render("note", { note });
+            // If the note is found, render it
+            if (result.length > 0) {
+                const note = result[0];
+                res.render("note", { note });
+            } else {
+                // Note not found
+                res.status(404).send("Note not found");
+            }
+        });
     }
 });
-
 
 // update notes
 app.post("/notes/:id", (req, res) => {
     const noteId = parseInt(req.params.id);
-    const updatedNote = req.body;
-    const notes = readOrWriteFile('read', null, "data/notes.json");
-    let parsedNotes = JSON.parse(notes);
-    
-    // Find the index of the note to be updated
-    const noteIndex = parsedNotes.findIndex(note => note.noteID === noteId);
-    if (noteIndex !== -1) {
-        // Update the note with the new data
-        parsedNotes[noteIndex] = { ...parsedNotes[noteIndex], ...updatedNote };
-        readOrWriteFile('write', JSON.stringify(parsedNotes), "data/notes.json");
-        
-        // if it worked
-        res.redirect("/notes");
-    } else {
-        res.status(404).send("Note not found");
+    const { title, content, category } = req.body;
+
+    if (!noteId) {
+        res.status(400).send("Invalid note ID");
+        return;
     }
+
+    // Update the note in the database
+    const sql = 'UPDATE notes SET title = ?, content = ?, category = ? WHERE noteID = ?';
+    con.query(sql, [title, content, category, noteId], (err, result) => {
+        if (err) throw err;
+        console.log("Number of records updated: " + result.affectedRows);
+        res.redirect("/notes");
+    });
 });
+
+
+// delete notes
+app.get("/notes/:id/delete", (req, res) => {
+    const noteId = parseInt(req.params.id);
+    if (!noteId) {
+        res.status(400).send("Invalid note ID");
+        return;
+    }
+
+    // Delete the note from the database
+    const sql = 'DELETE FROM notes WHERE noteID = ?';
+    con.query(sql, [noteId], (err, result) => {
+        if (err) throw err;
+        console.log("Number of records deleted: " + result.affectedRows);
+        res.redirect("/notes");
+    });
+});
+
 
 // ========================================
 //                Calendar
@@ -182,55 +193,75 @@ app.post("/notes/:id", (req, res) => {
 
 // Route for displaying calendar list
 app.get("/calendar", (req, res) => {
-    const events = readOrWriteFile('read', null, "data/calendarEvents.json");
-    const parsedEvents = JSON.parse(events);
-    console.log(events)
+    // Construct the SQL query to select calendar events for the current user
+    var sql = `SELECT * FROM calendar WHERE userID = ${userId}`;
+    
+    // Execute the SQL query
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        
+        // Extract relevant data
+        const eventId = result.map(event => event.calendarID);
+        const eventsTitle = result.map(event => event.title);
+        const startTime = result.map(event => new Date(event.startDateTime).toLocaleString());
+        const endTime = result.map(event => new Date(event.endDateTime).toLocaleString());
 
-    const userEvents = parsedEvents.filter(event => event.userID === userId);
-
-    const eventId = userEvents.map(event => event.calendarID);
-    const eventsTitle = userEvents.map(event => event.title);
-    const startTime = userEvents.map(event => new Date(event.startDateTime).toLocaleString());
-    const endTime = userEvents.map(event => new Date(event.endDateTime).toLocaleString());
-
-
-    res.render("calendar", { eventId, eventsTitle, startTime, endTime });
+        // Render the calendar page
+        res.render("calendar", { eventId, eventsTitle, startTime, endTime });
+    });
 });
+
 
 // displaying calendar by id
 app.get("/events/:id", (req, res) => {
     const eventId = parseInt(req.params.id);
 
-    // Check if eventId is 0 (new event)
     if (eventId === 0) {
-        const events = readOrWriteFile('read', null, "data/calendarEvents.json");
-        const parsedEvents = JSON.parse(events);
-
-        // Create a new blank event
+        // Create a new event
         const newEvent = {
-            calendarID: generateEventId(parsedEvents),
             userID: userId,
             title: "",
             description: "",
-            startDateTime: "",
-            endDateTime: "",
+            startDateTime: null,
+            endDateTime: null,
             isAllDay: false,
             location: ""
         };
 
-        // Save the new event to the database
-        parsedEvents.push(newEvent);
-        readOrWriteFile('write', JSON.stringify(parsedEvents), "data/calendarEvents.json");
-
-        // Render the new event
-        res.render("event", { event: newEvent });
+        // Insert the new event into the database
+        con.query('INSERT INTO calendar SET ?', newEvent, (err, result) => {
+            if (err) {
+                res.status(500).send("Error creating new event");
+            } else {
+                newEvent.calendarID = result.insertId;
+                res.render("event", { event: newEvent });
+            }
+        });
     } else {
-        const events = readOrWriteFile('read', null, "data/calendarEvents.json");
-        const parsedEvents = JSON.parse(events);
-        const event = parsedEvents.find(event => event.calendarID === eventId);
+        // Fetch existing event from the database
+        con.query('SELECT * FROM calendar WHERE calendarID = ?', eventId, (err, rows) => {
+            if (err) {
+                res.status(500).send("Error fetching event");
+            } else if (rows.length === 0) {
+                res.status(404).send("Event not found");
+            } else {
+                const event = rows[0];
 
-        // Render the existing event
-        res.render("event", { event });
+
+                // VERY TEDIOUS. Basically, datetime from MySQL cannot be read into a datetime-local input.
+                event.startDateTime = moment(event.startDateTime); // converts to moment object so i can format it later
+                event.endDateTime = moment(event.endDateTime);
+
+                localStart = event.startDateTime.format('YYYY-MM-DDTHH:mm'); // changes the format so datetime-local can work
+                localEnd = event.endDateTime.format('YYYY-MM-DDTHH:mm');
+
+                event.startDateTime = localStart;
+                event.endDateTime = localEnd;
+
+                res.render("event", { event });
+                console.log(event.startDateTime);
+            }
+        });
     }
 });
 
@@ -238,23 +269,47 @@ app.get("/events/:id", (req, res) => {
 // update events
 app.post("/events/:id", (req, res) => {
     const eventId = parseInt(req.params.id);
-    const updatedEvent = req.body;
-    const events = readOrWriteFile('read', null, "data/calendarEvents.json");
-    let parsedEvents = JSON.parse(events);
+    const { title, description, startDateTime, endDateTime, isAllDay, location } = req.body;
 
-    // Find the index of the event to be updated
-    const eventIndex = parsedEvents.findIndex(event => event.calendarID === eventId);
-    if (eventIndex !== -1) { 
-        // Update the event with the new data
-        parsedEvents[eventIndex] = { ...parsedEvents[eventIndex], ...updatedEvent };
-        readOrWriteFile('write', JSON.stringify(parsedEvents), "data/calendarEvents.json");
-        
-        // if it worked
-        res.redirect("/calendar");
-    } else {
-        res.status(404).send("Event not found");
+    if (!eventId) {
+        res.status(400).send("Invalid event ID");
+        return;
     }
-})
+
+    // Update the event in the database
+    const sql = 'UPDATE calendar SET title = ?, description = ?, startDateTime = ?, endDateTime = ?, isAllDay = ?, location = ? WHERE calendarID = ?';
+    const values = [title, description, startDateTime, endDateTime, isAllDay, location, eventId];
+
+    con.query(sql, values, (err, result) => {
+        if (err) {
+            res.status(500).send("Error updating event");
+        } else if (result.affectedRows === 0) {
+            res.status(404).send("Event not found");
+        } else {
+            res.redirect("/calendar");
+        }
+    });
+});
+
+
+// delete events
+app.get("/events/:id/delete", (req, res) => {
+    const eventId = parseInt(req.params.id);
+    if (!eventId) {
+        res.status(400).send("Invalid event ID");
+        return;
+    }
+
+    // Delete the event from the database
+    const sql = 'DELETE FROM calendar WHERE calendarID = ?';
+    con.query(sql, [eventId], (err, result) => {
+        if (err) throw err;
+        console.log("Number of records deleted: " + result.affectedRows);
+        res.redirect("/calendar");
+    });
+});
+
+
 
 // Start the server
 app.listen(port, () => {
@@ -262,8 +317,10 @@ app.listen(port, () => {
 });
 
 // ========================================
-//                Functions
+//               Functions
 // ========================================
+/*
+// OBSELETE AS OF MYSQL IMPLEMENTATION
 function readOrWriteFile(syntax, content, filePath) {
     if (syntax === 'read') {
         try {
@@ -286,6 +343,7 @@ function readOrWriteFile(syntax, content, filePath) {
     }
 }
 
+// OBSELETE AS OF MYSQL IMPLEMENTATION
 function generateUniqueId(parsedNotes) {
     // Find the highest existing ID
     const highestId = parsedNotes.reduce((maxId, note) => {
@@ -296,6 +354,7 @@ function generateUniqueId(parsedNotes) {
     return highestId + 1;
 }
 
+// OBSELETE AS OF MYSQL IMPLEMENTATION
 function generateEventId(parsedEvents) {
     // Find the highest existing calendarID
     const highestId = parsedEvents.reduce((maxId, event) => {
@@ -306,8 +365,4 @@ function generateEventId(parsedEvents) {
     return highestId + 1;
 }
 
-
-/*
-https://uiverse.io/Alanav29/tough-ape-65 (Username Input)
-https://github.com/iamshaunjp/bootstrap-4-playlist/blob/lesson-9/index.html 
 */

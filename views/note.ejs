@@ -22,6 +22,7 @@
                             <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= note.title %>">
                         </div>
                         <div class="col d-flex justify-content-end">
+                            <a href="/notes/<%= note.noteID %>/delete" class="btn btn-danger me-2 notes-btn">Delete</a>
                             <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
                         </div>
                     </div>
