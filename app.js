@@ -1,3 +1,16 @@
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "c237_web_app"
+});
+
+con.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected!");
+});
+
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -58,30 +71,35 @@ app.post("/usersdb", (req, res) => {
 // ========================================
 app.post("/login", (req, res) => {
     const username = req.body.username;
-    const users = readOrWriteFile('read', null, "data/users.json");
-    const parsedUsers = JSON.parse(users);
-    const user = parsedUsers.find(user => user.username === username);
-    
-    if (user) {
-        userId = user.userID;
-        res.redirect("/notes");
-    } else {
-        // User not found
-        const newUser = {
-            userID: parsedUsers.length + 1,
-            username: username,
-            createdAt: new Date().toISOString()
-        };
 
-        // Save the new user to the database
-        parsedUsers.push(newUser);
-        readOrWriteFile('write', JSON.stringify(parsedUsers), "data/users.json");
+    // Query the database for the username
+    var sql = `SELECT * FROM users WHERE username = '${username}'`;
+    con.query(sql, function (err, result) {
+        if (err) throw err;
 
-        userId = newUser.userID;
-        res.redirect("/notes");
-    }
+        if (result.length > 0) {
+            // User found, set userId and redirect to notes page
+            userId = result[0].userID;
+            res.redirect("/notes");
+        } else {
+            // User not found, insert new user into the database
+            var sqlInsert = `INSERT INTO users (username) VALUES ('${username}')`; // createdAt not used, it's defaulted to current timestamp in MySQL
+            con.query(sqlInsert, function (err, result) {
+                if (err) throw err;
+
+                // Get the ID of the newly inserted user
+                var sqlSelect = `SELECT LAST_INSERT_ID() AS userID`;
+                con.query(sqlSelect, function (err, result) {
+                    if (err) throw err;
+
+                    // Set userId and redirect to notes page
+                    userId = result[0].userID;
+                    res.redirect("/notes");
+                });
+            });
+        }
+    });
 });
-
 
 // ========================================
 //                  Notes
@@ -162,7 +180,7 @@ app.post("/notes/:id", (req, res) => {
 //                Calendar
 // ========================================
 
-// Route for displaying calendar
+// Route for displaying calendar list
 app.get("/calendar", (req, res) => {
     const events = readOrWriteFile('read', null, "data/calendarEvents.json");
     const parsedEvents = JSON.parse(events);
@@ -170,12 +188,13 @@ app.get("/calendar", (req, res) => {
 
     const userEvents = parsedEvents.filter(event => event.userID === userId);
 
+    const eventId = userEvents.map(event => event.calendarID);
     const eventsTitle = userEvents.map(event => event.title);
     const startTime = userEvents.map(event => new Date(event.startDateTime).toLocaleString());
     const endTime = userEvents.map(event => new Date(event.endDateTime).toLocaleString());
 
 
-    res.render("calendar", { eventsTitle, startTime, endTime });
+    res.render("calendar", { eventId, eventsTitle, startTime, endTime });
 });
 
 // displaying calendar by id
@@ -189,7 +208,7 @@ app.get("/events/:id", (req, res) => {
 
         // Create a new blank event
         const newEvent = {
-            calendarID: generateUniqueId(parsedEvents),
+            calendarID: generateEventId(parsedEvents),
             userID: userId,
             title: "",
             description: "",
@@ -214,6 +233,28 @@ app.get("/events/:id", (req, res) => {
         res.render("event", { event });
     }
 });
+
+
+// update events
+app.post("/events/:id", (req, res) => {
+    const eventId = parseInt(req.params.id);
+    const updatedEvent = req.body;
+    const events = readOrWriteFile('read', null, "data/calendarEvents.json");
+    let parsedEvents = JSON.parse(events);
+
+    // Find the index of the event to be updated
+    const eventIndex = parsedEvents.findIndex(event => event.calendarID === eventId);
+    if (eventIndex !== -1) { 
+        // Update the event with the new data
+        parsedEvents[eventIndex] = { ...parsedEvents[eventIndex], ...updatedEvent };
+        readOrWriteFile('write', JSON.stringify(parsedEvents), "data/calendarEvents.json");
+        
+        // if it worked
+        res.redirect("/calendar");
+    } else {
+        res.status(404).send("Event not found");
+    }
+})
 
 // Start the server
 app.listen(port, () => {
@@ -254,6 +295,18 @@ function generateUniqueId(parsedNotes) {
     // Increment the highest ID by 1 to generate a new unique ID
     return highestId + 1;
 }
+
+function generateEventId(parsedEvents) {
+    // Find the highest existing calendarID
+    const highestId = parsedEvents.reduce((maxId, event) => {
+        return event.calendarID > maxId ? event.calendarID : maxId;
+    }, 0);
+
+    // Increment the highest ID by 1 to generate a new unique ID
+    return highestId + 1;
+}
+
+
 /*
 https://uiverse.io/Alanav29/tough-ape-65 (Username Input)
 https://github.com/iamshaunjp/bootstrap-4-playlist/blob/lesson-9/index.html 
