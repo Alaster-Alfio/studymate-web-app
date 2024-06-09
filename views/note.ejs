@@ -17,9 +17,6 @@
             <!-- Content area -->
             <div class="col mt-3">
                 <form action="/notes/<%= note.noteID %>/" method="POST">
-                    <div class="d-none">
-                        <input type="text" placeholder="Id" id="id" class="input" name="id" value="<%= note.id %>"> <!-- Not sure how, but this makes my page work -->
-                    </div>
                     <div class="row">
                         <div class="col">
                             <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= note.title %>">

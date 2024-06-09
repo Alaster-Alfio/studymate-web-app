@@ -33,8 +33,8 @@
                 </div>
                 <div class="row m-2">
                     <% for (let i = 0; i < eventsTitle.length; i++) { %>
-                        <div class="d-inline-block col-md-6 col-lg-5 g-1">
-                            <div class="card mb-1">
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                            <div class="card mb-1"><a href="/events/<%= eventId[i] %>">
                                 <div class="card-body">
                                     <h5 class="card-title"><%= eventsTitle[i] %></h5>
                                     <p class="card-text">
@@ -42,7 +42,7 @@
                                         <strong>End Date:</strong> <%= endTime[i] %>
                                     </p>
                                 </div>
-                            </div>
+                            </a></div>
                         </div>
                     <% } %>
                 </div>
@@ -50,6 +50,10 @@
         </div>
     </div>
     <style>        
+        a {
+            text-decoration: none;
+            color: black;
+        }
         .plusButton {
             /* Config start */
             --plus_sideLength: 2.5rem;

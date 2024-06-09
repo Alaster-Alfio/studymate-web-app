@@ -15,13 +15,13 @@
             <%- include ('partials/navbar.ejs') %>
             
             <!-- Content area -->
-            <div class="col mt-3 force-col">
+            <div class="col mt-3">
                 <form action="/events/<%= event.calendarID %>/" method="POST">
                     <div class="row">
-                        <div class="col col-md-8">
+                        <div class="col col-md-8 title-col">
                             <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= event.title %>">
                         </div>
-                        <div class="col justify-content-end save-col">
+                        <div class="col justify-content-end d-flex">
                             <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
                         </div>
                     </div>
@@ -33,18 +33,24 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <input type="datetime-local" placeholder="start" id="startNew" class="input mt-3 input-start" name="start" value="<%= event.startDateTime %>">
+                            <input type="datetime-local" placeholder="start" id="startNew" class="input mt-3 input-start w-100 date-box" name="startDateTime" value="<%= event.startDateTime %>">
                         </div>
                         <div class="col">
-                            <input type="datetime-local" placeholder="end" id="endNew" class="input mt-3 input-end" name="end" value="<%= event.endDateTime %>">
+                            <input type="datetime-local" placeholder="end" id="endNew" class="input mt-3 input-end w-100 date-box" name="endDateTime" value="<%= event.endDateTime %>">
                         </div>
-                    </div>
+                    
                     <!-- check if isAllDay (true or false) -->
-                    <div class="row">
-                        <div class="col d-flex">
-                            <input type="checkbox" id="allDayNew" name="allDay" value="<%= event.isAllDay %>">
+                        <div class="col mt-3 checkbox-wrapper-2 align-middle">
+                            <input type="checkbox" id="allDayNew" class="allDay-input" name="isAllDay" value="<%= event.isAllDay %>">
                             <label for="allDay" class="m-1">All Day</label>
                         </div>
+                        <div class="col"></div>  <!-- Empty col so the previous col takes only 50% space -->
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <!-- location input -->
+                            <input type="text" placeholder="Location" id="locationNew" class="input mt-3 input-location" name="location" value="<%= event.location %>">
+                    </div>
                 </form>
             </div>
         </div>
@@ -52,6 +58,9 @@
     
     <!-- CSS Styles -->
     <style>
+        .title-col {
+            width: 50%;
+        }
         .input-title {
             font-size: xx-large;
             width: 100%;
@@ -69,7 +78,25 @@
             border-bottom: 2px solid black;
             transition: all 0.2 ease;
         }
-        .input-descrition:focus {
+        .input-description:focus {
+            outline: none !important;
+            border-bottom: 2px solid #8a00ff;
+        }
+        .date-box {
+            border: 2px solid black;
+            transition: all 0.2 ease;
+        }
+        .date-box:focus {
+            outline: none !important;
+            border: 2px solid #8a00ff;
+        }
+        .input-location {
+            width: 20%;
+            border: 0px;
+            border-bottom: 2px solid black;
+            transition: all 0.2 ease;
+        }
+        .input-location:focus {
             outline: none !important;
             border-bottom: 2px solid #8a00ff;
         }
@@ -89,9 +116,6 @@
         .force-col {
             position: absolute;
             margin-left: 170px;
-        }
-        .save-col {
-            width: 100px;
         }
     </style>
 </body>

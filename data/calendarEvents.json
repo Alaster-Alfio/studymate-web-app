@@ -1,22 +1,32 @@
 [
-    {
-        "calendarID": 1,
-        "userID": 1,
-        "title": "Team Meeting",
-        "description": "Discussion about the project updates, action items, and next steps.",
-        "startDateTime": "2024-06-15T09:00:00",
-        "endDateTime": "2024-06-15T10:00:00",
-        "isAllDay": false,
-        "location": "Conference Room 1"
-    },
-    {
-        "calendarID": 2,
-        "userID": 1,
-        "title": "Doctor Appointment",
-        "description": "Routine check-up.",
-        "startDateTime": "2024-06-16T11:00:00",
-        "endDateTime": "2024-06-16T12:00:00",
-        "isAllDay": false,
-        "location": "Clinic"
-    }
+  {
+    "calendarID": 1,
+    "userID": 1,
+    "title": "Project Meeting",
+    "description": "Meet up with random peopole for thy ",
+    "startDateTime": "2024-06-15T09:00:00",
+    "endDateTime": "2024-06-15T10:00:00",
+    "isAllDay": false,
+    "location": "Conference Room 1"
+  },
+  {
+    "calendarID": 2,
+    "userID": 1,
+    "title": "Doctor Appointment",
+    "description": "Routine check-up.",
+    "startDateTime": "2024-06-16T11:00:00",
+    "endDateTime": "2024-06-16T12:00:00",
+    "isAllDay": false,
+    "location": "Clinic"
+  },
+  {
+    "calendarID": 3,
+    "userID": 1,
+    "title": "Tawae",
+    "description": "RTaw",
+    "startDateTime": "2024-06-08T20:20",
+    "endDateTime": "2024-06-13T20:20",
+    "isAllDay": false,
+    "location": "Test"
+  }
 ]
