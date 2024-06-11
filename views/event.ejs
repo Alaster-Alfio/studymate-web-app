@@ -22,8 +22,8 @@
                             <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= event.title %>">
                         </div>
                         <div class="col justify-content-end d-flex">
-                            <a href="/events/<%= event.calendarID %>/delete" class="btn btn-danger me-2 notes-btn">Delete</a>
-                            <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
+                            <a href="/events/<%= event.calendarID %>/delete" class="btn btn-danger me-2 d-flex align-items-center justify-content-center border-0 notes-btn">Delete</a>
+                            <button type="submit" class="btn btn-primary me-2 d-flex align-items-center justify-content-center border-0 notes-btn">Save</button>
                         </div>
                     </div>
                     <div class="row d-flex">
@@ -102,15 +102,10 @@
             border-bottom: 2px solid #8a00ff;
         }
         .notes-btn {
-            display: flex;
             width: 100px;
-            height: 52px;
-            align-items: center;
-            justify-content: center;
             letter-spacing: 1px;
-            cursor: pointer;
-            border: none;
             font-size: large;
+            border-radius: 30px;
             background: linear-gradient(to bottom, #a352aa, #8a00ff);
             transition: all 0.5s ease;
         }

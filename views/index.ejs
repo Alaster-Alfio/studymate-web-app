@@ -17,11 +17,11 @@
             <!-- Content area -->
             <div class="col mt-3 force-col">
                 <div class="text-center my-4">
-                    <h1> <%= username %></h1>
+                    <h1>Welcome, <%= username %></h1>
                     <div class="d-flex justify-content-center mt-3">
                     <form action="/" method="POST">
-                        <div class="InputContainer">
-                            <input type="text" placeholder="Username" id="username" class="input" name="username">
+                        <div class="input-container d-flex align-items-center justify-content-center">
+                            <input type="text" placeholder="Username" id="username" class="input-username border-0" name="username">
                         </div>
                     </form>
                     </div>
@@ -35,22 +35,16 @@
         .force-col {
             position: absolute;
         }
-        .InputContainer {
+        .input-container {
             width: 210px;
             height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             background: linear-gradient(to bottom, #a352aa, #8a00ff);
             border-radius: 30px;
-            overflow: hidden;
-            cursor: pointer;
         }
 
-        .input {
+        .input-username {
             width: 200px;
             height: 40px;
-            border: none;
             outline: none;
             border-radius: 30px;
             padding-left: 15px;

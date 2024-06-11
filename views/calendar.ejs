@@ -16,7 +16,7 @@
             <!-- Content area -->
             <div class="col mt-3">
                 <div class="row">
-                    <div class="col">
+                    <div class="col col-title">
                         <h2>Calendar</h2>
                     </div>
                     <div class="col d-flex justify-content-end">
@@ -35,7 +35,7 @@
                     <% for (let i = 0; i < eventsTitle.length; i++) { %>
                         <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
                             <div class="card mb-1"><a href="/events/<%= eventId[i] %>">
-                                <div class="card-body">
+                                <div class="card-body m-1">
                                     <h5 class="card-title"><%= eventsTitle[i] %></h5>
                                     <p class="card-text">
                                         <strong>Start Date:</strong> <%= startTime[i] %> <br>
@@ -54,11 +54,23 @@
             text-decoration: none;
             color: black;
         }
+
+        .col-title {
+            margin-left: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(to bottom, #a352aa, #8a00ff);
+            border-radius: 40px;
+        }
+        .card-body {
+            border-radius: 35px;
+            background: white;
+        }
+
         .plusButton {
-            /* Config start */
             --plus_sideLength: 2.5rem;
             --plus_topRightTriangleSideLength: 0.9rem;
-            /* Config end */
             position: relative;
             display: flex;
             justify-content: center;

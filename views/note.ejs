@@ -19,21 +19,21 @@
                 <form action="/notes/<%= note.noteID %>/" method="POST">
                     <div class="row">
                         <div class="col">
-                            <input type="text" placeholder="Title" id="titleNew" class="input input-title" name="title" value="<%= note.title %>">
+                            <input type="text" placeholder="Title" id="titleNew" class="input-title" name="title" value="<%= note.title %>">
                         </div>
                         <div class="col d-flex justify-content-end">
-                            <a href="/notes/<%= note.noteID %>/delete" class="btn btn-danger me-2 notes-btn">Delete</a>
-                            <button type="submit" class="btn btn-primary me-2 notes-btn">Save</button>
+                            <a href="/notes/<%= note.noteID %>/delete" class="btn btn-danger me-2 d-flex align-items-center justify-content-center border-0 notes-btn">Delete</a>
+                            <button type="submit" class="btn btn-primary me-2 d-flex align-items-center justify-content-center border-0 notes-btn">Save</button>
                         </div>
                     </div>
                     <div class="row d-flex">
                         <div class="col">
-                            <input type="text" placeholder="Category" id="categoryNew" class="input mt-3 input-category" name="category" value="<%= note.category %>">
+                            <input type="text" placeholder="Category" id="categoryNew" class="mt-3 input-category" name="category" value="<%= note.category %>">
                         </div>
                         <div class="col"></div> <!-- Empty col so the previous col takes only 50% space -->
                     </div>
                     <div class="row">
-                        <textarea placeholder="Content" id="contentNew" class="input mt-3 input-textarea" rows="20" name="content"><%= note.content %></textarea>
+                        <textarea placeholder="Content" id="contentNew" class="mt-3 input-textarea" rows="20" name="content"><%= note.content %></textarea>
                     </div>
                 </form>
             </div>
@@ -67,7 +67,7 @@
             width: 100%;
             border: 0px;
             transition: all 0.2 ease;
-            background-image: radial-gradient(rgb(214, 214, 214) 2px, transparent 0);
+            background-image: radial-gradient(rgb(230, 230, 230) 2px, transparent 0);
             background-size: 24px 24px;
             background-position: 0px 15px;
         }
@@ -75,14 +75,10 @@
             outline: none !important;
         }
         .notes-btn {
-            display: flex;
             width: 100px;
-            align-items: center;
-            justify-content: center;
             letter-spacing: 1px;
-            cursor: pointer;
-            border: none;
             font-size: large;
+            border-radius: 30px;
             background: linear-gradient(to bottom, #a352aa, #8a00ff);
             transition: all 0.5s ease;
         }
