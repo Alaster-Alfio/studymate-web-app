@@ -3,11 +3,17 @@ var mysql = require('mysql');
 var con = mysql.createConnection({
     host: "localhost",
     user: "root",
+    password: "123",
     database: "c237_web_app"
 });
 
+var conAvail = false
+
 con.connect(function(err) {
-    if (err) throw err;
+    if (err) {
+        throw err;
+        console.log("Connection failed!");
+    } 
     console.log("Connected!");
 });
 
@@ -16,6 +22,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const path = require("path");
+const fs = require("fs");
 
 // Set up middleware for parsing JSON bodies
 app.use(express.json());
@@ -40,8 +47,10 @@ app.get("/", function (req, res) {
     // Query the database for the username
     const sql = 'SELECT username FROM users WHERE userID = ?';
     con.query(sql, [userId], (err, result) => {
-        if (err) {
-            res.status(500).send("Error fetching username");
+        if (err) { // if error, resort to JSON data as a sample.
+            const username = "john_doe";
+            res.render("index", { username });
+
         } else if (result.length === 0) {
             res.status(404).send("User not found");
         } else {
@@ -318,7 +327,7 @@ app.listen(port, () => {
 // ========================================
 //               Functions
 // ========================================
-/*
+
 // OBSELETE AS OF MYSQL IMPLEMENTATION
 function readOrWriteFile(syntax, content, filePath) {
     if (syntax === 'read') {
@@ -364,4 +373,3 @@ function generateEventId(parsedEvents) {
     return highestId + 1;
 }
 
-*/
