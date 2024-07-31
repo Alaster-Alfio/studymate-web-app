@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Studymate</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Vertical navbar -->
+            <%- include ('partials/navbar.ejs') %>
+
+            <!-- Content area -->
+            <div class="col mt-3">
+                <div class="row">
+                    <div class="col col-title">
+                        <h2>Calendar</h2>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <a href="/events/0">
+                        <div tabindex="0" class="plusButton me-2">
+                            <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                                <g mask="url(#mask0_21_345)">
+                                    <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                                </g>
+                            </svg>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <% for (let i = 0; i < eventsTitle.length; i++) { %>
+                        <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                            <div class="card mb-1"><a href="/events/<%= eventId[i] %>">
+                                <div class="card-body m-1">
+                                    <h5 class="card-title"><%= eventsTitle[i] %></h5>
+                                    <p class="card-text">
+                                        <strong>Start Date:</strong> <%= startTime[i] %> <br>
+                                        <strong>End Date:</strong> <%= endTime[i] %>
+                                    </p>
+                                </div>
+                            </a></div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>        
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .col-title {
+            margin-left: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(to bottom, #a352aa, #8a00ff);
+            border-radius: 40px;
+        }
+        .card-body {
+            border-radius: 35px;
+            background: white;
+        }
+
+        .plusButton {
+            --plus_sideLength: 2.5rem;
+            --plus_topRightTriangleSideLength: 0.9rem;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid white;
+            width: var(--plus_sideLength);
+            height: var(--plus_sideLength);
+            background-color: #8a00ff;
+            overflow: hidden;
+        }
+
+        .plusButton::before {
+            position: absolute;
+            content: "";
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+            transition-timing-function: ease-in-out;
+            transition-duration: 0.2s;
+        }
+
+        .plusButton:hover {
+            cursor: pointer;
+        }
+
+        .plusButton:hover::before {
+            --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+        }
+
+        .plusButton:focus-visible::before {
+            --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+        }
+
+        .plusButton>.plusIcon {
+            fill: white;
+            width: calc(var(--plus_sideLength) * 0.7);
+            height: calc(var(--plus_sideLength) * 0.7);
+            z-index: 1;
+            transition-timing-function: ease-in-out;
+            transition-duration: 0.2s;
+        }
+
+        .plusButton:hover>.plusIcon {
+            fill: purple;
+            transform: rotate(180deg);
+        }
+
+        .plusButton:focus-visible>.plusIcon {
+            fill: black;
+            transform: rotate(180deg);
+        }
+        .card {
+            max-width: 500px; /* Adjust this value as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</body>
+</html>

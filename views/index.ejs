@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Studymate</title>
+</head>
+<body>
+    <!-- Main content area -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Vertical navbar -->
+            <%- include ('partials/navbar.ejs') %>
+            
+            <!-- Content area -->
+            <div class="col mt-3 force-col">
+                <div class="text-center my-4">
+                    <h1>Welcome, <%= username %></h1>
+                    <div class="d-flex justify-content-center mt-3">
+                    <form action="/" method="POST">
+                        <div class="input-container d-flex align-items-center justify-content-center">
+                            <input type="text" placeholder="Username" id="username" class="input-username border-0" name="username">
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CSS Styles -->
+    <style>
+        .force-col {
+            position: absolute;
+        }
+        .input-container {
+            width: 210px;
+            height: 50px;
+            background: linear-gradient(to bottom, #a352aa, #8a00ff);
+            border-radius: 30px;
+        }
+
+        .input-username {
+            width: 200px;
+            height: 40px;
+            outline: none;
+            border-radius: 30px;
+            padding-left: 15px;
+            letter-spacing: 0.8px;
+        }
+    </style>
+</body>
+</html>
