@@ -1,10 +1,14 @@
 const mysql = require('mysql2');
 
 var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "c237_web_app"
+    // host: "localhost",
+    // user: "root",
+    // password: "",
+    // database: "c237_web_app"
+    host: 'db4free.net',
+    user: 'alastera',
+    password: 'alaster123',
+    database: 'c237_web_app'
 });
 
 var conAvail = false
